@@ -90,7 +90,7 @@
 		</plugins>
 	<finalName>HelloWorldSample</finalName>
  </build>
- <!-- Nexus Repo Configuration start -->
+ <!-- Nexus Repo Configuration start 
  <distributionManagement>
    <snapshotRepository>
       <id>deploymentRepo</id>
@@ -100,5 +100,5 @@
       <uniqueVersion>false</uniqueVersion>
       </snapshotRepository>
     </distributionManagement>
-     <!-- Nexus Repo Configuration end -->
+     Nexus Repo Configuration end -->
 </project>
