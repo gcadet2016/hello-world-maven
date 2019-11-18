@@ -1,0 +1,12 @@
+sonar.host.url=http://x.x.x.x:9000
+sonar.login=admin
+sonar.password=admin
+sonar.projectKey=sample-poc-unique
+sonar.projectName=sample-poc-hello-world
+sonar.sources=src
+sonar.java.binaries=target/classes
+sonar.sourceEncoding=UTF-8
+sonar.projectVersion=1.0
+sonar.jacoco.reportPaths=target/coverage-reports/jacoco-unit.exec
+sonar.exclusions=src/main/java/com/abc/XYZ.java
+sonar.exclusions=src/test/java/com/abc/*
