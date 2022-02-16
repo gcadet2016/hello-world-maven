@@ -29,8 +29,8 @@ stages:
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.11'
         jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
-        testResultsFiles: '**/TEST-*.xml'
+        #publishJUnitResults: false
+        #testResultsFiles: '**/TEST-*.xml'
         #goals: 'package'
 
     - task: CopyFiles@2
