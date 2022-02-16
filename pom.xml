@@ -14,7 +14,7 @@
 	<name>SpringBoot Hello-World</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -63,12 +63,6 @@
 					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
   				</configuration>
 				<executions>
-				<execution>
-    					<id>jacoco-initialize</id>
-    					<goals>
-     						<goal>prepare-agent</goal>
-    					</goals>
-   				</execution>
    				<execution>
     					<id>jacoco-site</id>
     					<phase>package</phase>
@@ -83,8 +77,8 @@
   				<groupId>org.apache.maven.plugins</groupId>
   				<artifactId>maven-compiler-plugin</artifactId>
   				<configuration>
-   				<source>1.8</source>
-   				<target>1.8</target>
+   				<source>11</source>
+   				<target>11</target>
   				</configuration>
  			</plugin>
 		</plugins>
