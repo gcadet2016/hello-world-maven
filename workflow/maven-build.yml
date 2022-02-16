@@ -6,30 +6,61 @@ name: Java CI with Maven
 trigger:
 - master
 
-pool:
-  vmImage: ubuntu-latest
+variables:
+  azureSubscription: 'ba4edc6f-36e3-4bd0-87d4-4e9097dedcb8' # Azure Resource Manager connection created during pipeline creation
+  webAppName: 'usecase-java'                                # Web app name
+  environmentName: 'usecase-java'                           # Environment name
+  vmImageName: 'ubuntu-latest'                              # Agent VM image name
 
-jobs:
-- job: build
-  steps:
-  - task: Maven@3
-    displayName: 'Maven Package'
-    inputs:
-      mavenPomFile: 'pom.xml'
-      mavenOptions: '-Xmx3072m'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.11'
-      jdkArchitectureOption: 'x64'
-      publishJUnitResults: false
-      testResultsFiles: '**/TEST-*.xml'
-      goals: 'package'
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: MavenPackageAndPublishArtifacts
+    displayName: Maven Package and Publish Artifacts
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Maven@3
+      displayName: 'Maven Package'
+      inputs:
+        mavenPomFile: 'pom.xml'
+        mavenOptions: '-Xmx3072m'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.11'
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: false
+        testResultsFiles: '**/TEST-*.xml'
+        goals: 'package'
 
-  - task: CopyFiles@2
-    displayName: 'Copy Files to artifact staging directory'
-    inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)'
-      Contents: '**/target/*.?(war|jar)'
-      TargetFolder: $(Build.ArtifactStagingDirectory)
+    - task: CopyFiles@2
+      displayName: 'Copy Files to artifact staging directory'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: '**/target/*.?(war|jar)'
+        TargetFolder: $(Build.ArtifactStagingDirectory)
 
-  - upload: $(Build.ArtifactStagingDirectory)
-    artifact: drop
+    - upload: $(Build.ArtifactStagingDirectory)
+      artifact: drop
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeployLinuxWebApp
+    displayName: Deploy Linux Web App
+    environment: $(environmentName)
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Azure Web App Deploy: usecase-java'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appType: webAppLinux
+              appName: $(webAppName)
+              package: '$(Pipeline.Workspace)/drop/**/target/*.?(war|jar)'
